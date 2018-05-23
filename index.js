@@ -17,36 +17,62 @@
 'use strict';
 /**
  * Function which returns an iterator like python's range().
- * Iterator goes from [start, end). if start is greater than end,
- * they are reversed and the sign on the increment is reversed as well
+ * Iterator goes from [start, end).
+ * If only one number is given, an implict range of [0, num) is implied.
+ * Increment parameter is reversed if the implicit range goes towards a
+ * negative value.
  *
- * @param {number} start - inclusive starting point;
- *                         if other parameters are omitted
- *                         it's the excluded end point.
- * @param {?number} end - excluded end point.
- * @param {?number} increment - value to increment by.
+ * <p>
+ *   <b>Note:</b> This function allows for ranges that
+ *   can go towards infinity in both directions
+ *   and will not prevent that.
+ * </p>
+ *
+ * @example
+ * const range = require('range-iterator');
+ * [ ...range(0, 3, 1) ] // [ 0, 1, 2 ]
+ *
+ * [ ...range(0, -3, -1) ] // [ 0, -1, -2 ]
+ *
+ * [ ...range(-5) ] // [ 0, -1, -2, -3, -4, -5 ]
+ *
+ * for (let i of range(Infinity)) {
+ *   console.log(i) // infinite incrementing i
+ * }
+ *
+ * @param {number} start      - inclusive starting point;
+ *                              if other parameters are omitted
+ *                              it's the excluded end point.
+ * @param {?number} end       - excluded end point.
+ * @param {?number} increment - value to increment by;
+ *                              must be within: $(-\infty, 0) \cup (0, \infty)$
+ *
+ * @returns {Iterator} an iterator [start, end)
  */
 function range(start, end, increment=1) {
 
-    if (typeof start != 'number') {
+    if (typeof start != 'number' || isNaN(start)) {
         throw TypeError('must give at least one numeric parameter');
     }
-    if (typeof end != 'number') {
+
+    // null or undefined
+    if (end == undefined) {
+        if (start < 0) increment = -increment;
         end = start;
         start = 0;
     }
-
-    if (start > end) {
-        let tmp = start;
-        start = end;
-        end = tmp;
-        // implicitly change sign on increment
-        // so negative ones
-        // will work as expected
-        increment = -increment;
+    else if (typeof end != 'number' || isNaN(end)) {
+        throw TypeError(
+            'end param must be a number or not given (null or undefined)'
+        );
     }
 
-    // avoid accum floating point errors.
+    if (typeof increment != 'number' || increment == 0 ||
+        isNaN(increment) || !isFinite(increment)
+    ) {
+        throw TypeError('Increment must not be 0, NaN or Infinite');
+    }
+
     let steps = (end - start) / increment;
     let stepsDone = 0;
 
@@ -59,7 +85,7 @@ function range(start, end, increment=1) {
                     }
                     return {
                         done: false,
-                        value: start + stepsDone++ * increment,
+                        value: start + (stepsDone++ * increment),
                     };
                 },
             }
