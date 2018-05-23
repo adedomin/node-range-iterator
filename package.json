@@ -1,0 +1,9 @@
+{
+  "name": "range-iterator",
+  "version": "1.0.0",
+  "description": "proper range iterator like python's range()",
+  "main": "index.js",
+  "repository": "https://github.com/adedomin/node-range-iterator.git",
+  "author": "Anthony DeDominic <adedomin@gmail.com>",
+  "license": "ISC"
+}
