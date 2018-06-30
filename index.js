@@ -88,9 +88,9 @@ function range(start, end, increment=1) {
                         value: start + (stepsDone++ * increment),
                     };
                 },
-            }
+            };
         },
-    }
+    };
 }
 
 module.exports = range;
