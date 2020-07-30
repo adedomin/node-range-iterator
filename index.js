@@ -15,6 +15,7 @@
  */
 
 'use strict';
+
 /**
  * Function which returns an iterator like python's range().
  * Iterator goes from [start, end).
@@ -34,7 +35,7 @@
  *
  * [ ...range(0, -3, -1) ] // [ 0, -1, -2 ]
  *
- * [ ...range(-5) ] // [ 0, -1, -2, -3, -4, -5 ]
+ * [ ...range(-5) ] // [ 0, -1, -2, -3, -4 ]
  *
  * for (let i of range(Infinity)) {
  *   console.log(i) // infinite incrementing i
@@ -51,7 +52,7 @@
  */
 function range(start, end, increment=1) {
 
-    if (typeof start != 'number' || isNaN(start)) {
+    if (typeof start !== 'number' || isNaN(start)) {
         throw TypeError('must give at least one numeric parameter');
     }
 
@@ -61,13 +62,13 @@ function range(start, end, increment=1) {
         end = start;
         start = 0;
     }
-    else if (typeof end != 'number' || isNaN(end)) {
+    else if (typeof end !== 'number' || isNaN(end)) {
         throw TypeError(
-            'end param must be a number or not given (null or undefined)'
+            'end param must be a number or not given (null or undefined)',
         );
     }
 
-    if (typeof increment != 'number' || increment == 0 ||
+    if (typeof increment !== 'number' || increment === 0 ||
         isNaN(increment) || !isFinite(increment)
     ) {
         throw TypeError('Increment must not be 0, NaN or Infinite');
